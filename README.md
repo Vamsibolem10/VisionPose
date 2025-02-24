@@ -1,14 +1,16 @@
-# ASL Recognition using MediaPipe and KNN
+# Vision Pose: Face & Hand Landmark Detection
 
-This project demonstrates real-time American Sign Language (ASL) recognition using hand landmarks detected by MediaPipe and a K-Nearest Neighbors (KNN) classifier.
+This project implements **real-time face and hand landmark detection** using **MediaPipe** and **OpenCV**. The detected landmarks are visualized with:  
+
+ ✔️ Hand Landmarks with Lines & Dots at Joints**  
+ ✔️ Face Mesh with Connected Lines**  
 
 ## Requirements
 
-- Python 3
+- Python
 - mediapipe
 - opencv-python
 - numpy
-- scikit-learn
 
 You can install the dependencies using:
 
