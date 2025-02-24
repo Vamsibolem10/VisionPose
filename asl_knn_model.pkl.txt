@@ -1,0 +1,50 @@
+import mediapipe as mp
+import cv2
+import numpy as np
+import pickle
+from sklearn.neighbors import KNeighborsClassifier
+
+# Initialize MediaPipe Hands
+mp_hands = mp.solutions.hands
+hands = mp_hands.Hands()
+
+# Data collection
+data = []
+labels = []
+
+cap = cv2.VideoCapture(0)
+print("📸 Collecting ASL hand landmarks... Press 'Q' to stop.")
+
+while True:
+    ret, frame = cap.read()
+    if not ret:
+        break
+
+    frame = cv2.flip(frame, 1)
+    rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    results = hands.process(rgb_frame)
+
+    if results.multi_hand_landmarks:
+        for hand_landmarks in results.multi_hand_landmarks:
+            landmarks = np.array([[lm.x, lm.y] for lm in hand_landmarks.landmark]).flatten()
+            data.append(landmarks)
+
+            # Ask user to enter label (A-Z)
+            label = input("Enter alphabet for this gesture (A-Z): ").upper()
+            labels.append(label)
+
+    cv2.imshow("ASL Data Collection", frame)
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+
+cap.release()
+cv2.destroyAllWindows()
+
+# Train and save KNN model
+knn_model = KNeighborsClassifier(n_neighbors=3)
+knn_model.fit(data, labels)
+
+with open("asl_knn_model.pkl", "wb") as f:
+    pickle.dump(knn_model, f)
+
+print("✅ ASL recognition model trained and saved as 'asl_knn_model.pkl'!")
